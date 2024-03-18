@@ -7,11 +7,10 @@ const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState<Place>();
     useEffect(() => {
-        fetch(`http://localhost:3100/${id}`).then(resp=>resp.json()).then(data=> setPlace(data)).catch(console.log)
-        console.log(place)
+        fetch(`http://localhost:3100/${id}`).then(resp=>resp.json()).then(data=> setPlace(data)).catch(console.error)
     }, [id]);
     return <Container>
-        {place && <PlaceView place={place}/>}
+        {place ? <PlaceView place={place}/> : <Typography>Place not found</Typography>}
     </Container>
 }
 
@@ -35,7 +34,7 @@ const PlaceView = ({place}: {place: Place}) => {
             {Object.entries(place.openingHours).map(([key, value])=> <Box display="flex" justifyContent="space-between">
                 <Typography variant="body1" pl={2}>{key}</Typography>
                 <Box display="flex" flexDirection="column">
-                    {value.map(time=> <Typography variant="body1" pl={2}>{time.start} - {time.end}</Typography>)}
+                    {value.map(time=> time.type === "OPEN" ? <Typography variant="body1" pl={2}>{time.start} - {time.end}</Typography>:<Typography variant="body1" pl={2}>{time.type}</Typography>)}
                 </Box>
             </Box>)}
         </Grid>
